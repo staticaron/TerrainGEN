@@ -10,14 +10,14 @@ public class NoiseMapGeneratorEditor : Editor
 
 		if (DrawDefaultInspector())
 		{
-			if (mapGen.isAutoUpdating()) mapGen.GenerateAndDisplay();
+			if (mapGen.isAutoUpdating()) mapGen.GenerateAndDisplay(false);
 		}
 
 		GUILayout.Space(6);
 
 		if (GUILayout.Button("Generate Map"))
 		{
-			mapGen.GenerateAndDisplay();
+			mapGen.GenerateAndDisplay(false);
 		}
 
 	}

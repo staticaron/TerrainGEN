@@ -28,8 +28,10 @@ public class NoiseMapGenerator : MonoBehaviour
 
 	[SerializeField] ColorDetails[] colorDetails;
 
-	public void GenerateAndDisplay()
+	public void GenerateAndDisplay(bool isRandom)
 	{
+		if (isRandom) seed = seed + 1;
+
 		float[,] noise = NoiseGenerator.GenerateNoiseMap(mapWidth, mapHeight, scale, seed, octaves, lacunarity, persistance, offset);
 
 		Texture2D tex = drawMode == DrawMode.ColorMap ? GenerateTexture(GetColorMapFromNoise(noise)) : GenerateTexture(GetHeightMapFromNoise(noise));

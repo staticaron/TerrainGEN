@@ -26,6 +26,7 @@ Shader "Custom/Water"
 
 		Blend SrcAlpha OneMinusSrcAlpha
 		ZWrite Off
+		Cull Off
 
 		CGPROGRAM
 
