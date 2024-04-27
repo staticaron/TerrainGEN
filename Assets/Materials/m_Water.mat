@@ -80,17 +80,20 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _DepthDifference: 9
+    - _DepthDifferenceGradient: 9
+    - _DepthDifferenceMask: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaxAmplitude: 0.5
+    - _MaxAmplitude: 1
     - _Metallic: 0
     - _Mode: 0
     - _NormalIntensity: 0.975
-    - _NormalIntensity1: 0.668
-    - _NormalIntensity2: 0.559
+    - _NormalIntensity1: 0.8
+    - _NormalIntensity2: 0.8
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _Smoothness: 1
@@ -98,12 +101,13 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaterAlpha: 0.7
+    - _WaterAlpha: 0.6
     - _WaveSpeed: 0.02
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.10588236, g: 0.47058827, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _WaterBaseTint: {r: 0, g: 0.52267194, b: 1, a: 1}
-    - _WaterHighlightTint: {r: 0, g: 1, b: 0.86056876, a: 1}
+    - _WaterBaseTint: {r: 0, g: 0, b: 0.764151, a: 1}
+    - _WaterHighlightTint: {r: 0, g: 0.70356584, b: 1, a: 1}
+    - _WaterSurfaceTint: {r: 0, g: 1, b: 0.8926091, a: 1}
   m_BuildTextureStacks: []

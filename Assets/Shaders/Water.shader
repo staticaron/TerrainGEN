@@ -14,11 +14,15 @@ Shader "Custom/Water"
 
 		_WaterHighlightTint("Water Highlight Tint", Color) = (1.0, 1.0, 1.0, 1.0)
 		_WaterBaseTint("Water Base Tint", Color) = (1.0, 1.0, 1.0, 1.0)
+		_WaterSurfaceTint("Water Surface Tint", Color) = (1.0, 1.0, 1.0, 1.0)
 		_WaterAlpha("Water Alpha", Range(0, 1)) = 0.5
 
 		_WaveSpeed("Wave Speed", Float) = 1.0
 
 		_Smoothness("Smoothness", Range(0, 1)) = 1.0
+
+		_DepthDifferenceGradient("Depth Difference Gradient", Float) = 1.0
+		_DepthDifferenceMask("Depth Difference Mask", Float) = 1.0
 	}
 	SubShader
 	{
@@ -33,8 +37,6 @@ Shader "Custom/Water"
 		#pragma surface surf Standard fullforwardshadows vertex:vert alpha:fade
 		#pragma target 3.0
 
-		sampler2D _WaveTexture;
-
 		sampler2D _WaveNoise;
 		float4 _WaveNoise_ST;
 
@@ -48,30 +50,52 @@ Shader "Custom/Water"
 
 		float4 _WaterHighlightTint;
 		float4 _WaterBaseTint;
+		float4 _WaterSurfaceTint;
 		float _WaterAlpha;
 
 		float _WaveSpeed;
 
 		float _Smoothness;
 
+		float _DepthDifferenceGradient;
+		float _DepthDifferenceMask;
 
 		sampler2D _CameraDepthTexture;
+		float4 _CameraDepthTexture_TexelSize;
 
 		struct Input
 		{
 			float2 uv_MainTex;
 			float2 uv_WaveNoise;
+			float4 screenPos;
+			float4 noiseMask;
 		};
 
-		void vert(inout appdata_full data)
+		float SurfaceIntersectionMask(float4 screenPos, bool returnGradient, float diff)
+		{
+			float2 uv              = screenPos.xy / screenPos.w;
+			float backgroundDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv));
+			float surfaceDepth    = UNITY_Z_0_FAR_FROM_CLIPSPACE(screenPos.z);
+
+			float depthDifference = backgroundDepth - surfaceDepth;
+
+			float gradient = saturate(1 - depthDifference / diff);
+			int mask = depthDifference <= diff;
+
+			return lerp(mask, gradient, returnGradient);
+		}
+		void vert(inout appdata_full data, out Input o)
 		{
 			float2 wave_noise_coords = data.texcoord;
 			wave_noise_coords.xy += _WaveSpeed * _Time.y;
 
 			float2 waveNoiseUV = TRANSFORM_TEX(wave_noise_coords, _WaveNoise);
-			float val = tex2Dlod(_WaveNoise, float4(waveNoiseUV, 0, 1));
+			float4 noiseMask = tex2Dlod(_WaveNoise, float4(waveNoiseUV, 0, 1));
 
-			data.vertex.y += lerp(0, _MaxAmplitude, val);
+			UNITY_INITIALIZE_OUTPUT(Input, o);
+			o.noiseMask = noiseMask;
+
+			data.vertex.y += lerp(0, _MaxAmplitude, noiseMask.r);
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o)
@@ -85,13 +109,10 @@ Shader "Custom/Water"
 			float depth = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, IN.uv_MainTex));
 			depth = Linear01Depth(depth) + 0.5;
 
-			fixed4 c = tex2D (_WaveTexture, coords);
+			float4 baseColor = lerp(_WaterBaseTint, _WaterHighlightTint, SurfaceIntersectionMask(IN.screenPos, true, _DepthDifferenceGradient));
 			
-			float4 tint = lerp(_WaterBaseTint, _WaterHighlightTint, c.r);
-
-			o.Albedo = tint;
+			o.Albedo = lerp(baseColor, _WaterSurfaceTint, SurfaceIntersectionMask(IN.screenPos, true, _DepthDifferenceMask));
 			o.Alpha = _WaterAlpha;
-
 			o.Smoothness = _Smoothness;
 
 			float3 normal1 = UnpackScaleNormal(tex2D(_WaveNormal1, coords), _NormalIntensity1);
