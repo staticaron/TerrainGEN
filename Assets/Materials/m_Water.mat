@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaveNoise:
-        m_Texture: {fileID: 2800000, guid: 9a3f47317ca680640a41d70f54e7f3de, type: 3}
+        m_Texture: {fileID: 2800000, guid: 213ea6b9f93061f48bb9e54572cd7a0f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaveNormal:
@@ -82,13 +82,13 @@ Material:
     - _Cutoff: 0.5
     - _DepthDifference: 9
     - _DepthDifferenceGradient: 9
-    - _DepthDifferenceMask: 1
+    - _DepthDifferenceMask: 2
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaxAmplitude: 1
+    - _MaxAmplitude: 0.2
     - _Metallic: 0
     - _Mode: 0
     - _NormalIntensity: 0.975
@@ -101,7 +101,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaterAlpha: 0.6
+    - _WaterAlpha: 0.8
     - _WaveSpeed: 0.02
     - _ZWrite: 1
     m_Colors:
