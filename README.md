@@ -15,3 +15,4 @@ https://github.com/staticaron/TerrainGEN/assets/66104268/ed407719-eebb-4790-8143
 
 https://github.com/staticaron/TerrainGEN/assets/66104268/635b659a-13ad-4634-80ed-a9224c94dfbd
 
+# GG PERFORMANCE :)
