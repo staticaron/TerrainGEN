@@ -18,6 +18,11 @@ public class KeyManager : MonoBehaviour
 		Keyboard.current.onTextInput -= KeyPressed;
 	}
 
+	private void Start()
+	{
+		KeyPressed('R');
+	}
+
 	private void KeyPressed(char obj)
 	{
 

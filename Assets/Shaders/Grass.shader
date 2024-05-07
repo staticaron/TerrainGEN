@@ -15,6 +15,8 @@ Shader "Custom/Grass"
         _MaxDisplacement("Max Displacement", Float) = 1.0
 
         _LookupCoords("Lookup Coords", Vector) = (1, 1, 1, 1)
+
+        _Value("Value", Float) = 0.1
     }
     SubShader
     {
@@ -38,9 +40,13 @@ Shader "Custom/Grass"
         
         float4 _LookupCoords;
 
+        float _Value;
+
         struct Input
         {
             float2 uv_MainTex : TEXCOORD0;
+            float3 worldPos : TEXCOORD1;
+            float value : TEXCOORD2;
         };
 
         float looper(float2 coordinates)
@@ -53,15 +59,19 @@ Shader "Custom/Grass"
             return value.x;
         }
 
-        void vert(inout appdata_full data)
+        void vert(inout appdata_full data, out Input o)
         {
-            float2 lookupCoords = float2(0.5 + _Time.y * _WindSpeed, 0.5);
-            float displacement = (looper(lookupCoords) * _MaxDisplacement - .5)* data.texcoord.y ;
-            
-            float3 worldVert = mul((float3x3) unity_ObjectToWorld, data.vertex.xyz);
-            worldVert.x += displacement;
+            UNITY_INITIALIZE_OUTPUT(Input, o);
+            o.worldPos = mul(unity_ObjectToWorld, data.vertex);
 
-            data.vertex = mul(unity_WorldToObject, worldVert);;
+            float3 mesh_world_pos = UNITY_MATRIX_M._m03_m13_m23;
+
+            float2 lookupCoords = float2(mesh_world_pos.x + _Time.y * _WindSpeed, mesh_world_pos.z);
+            float3 displacement = float3((looper(lookupCoords) * _MaxDisplacement - .5) * data.texcoord.y, 0, (looper(lookupCoords) * _MaxDisplacement - .5) * data.texcoord.y);
+            displacement        = mul(float4(displacement, 1), unity_ObjectToWorld).xyz;
+
+            data.vertex += float4(displacement, 0);
+            o.value      = looper(lookupCoords);
         }
 
         void surf (Input IN, inout SurfaceOutputStandard o)
